@@ -1,0 +1,38 @@
+{% extends "layout.%s.html"|format(config.TEMPLATE) %}
+{% block title %}Market Modifiers{% endblock %}
+{% block extra_style %}{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="span7">
+            <h4>Current Price Modifiers</h4>
+            <table class="table table-striped">
+                <tr><th>Item Name</th><th>Modifier</th><th></th></tr>
+                {% for mod in modifiers %}
+                <tr>
+                    <td>{{ mod.TypeName }}</td>
+                    <td>{{ mod.Modifier }}</td>
+                    <td><a href="{{ url_for('remove_mod', tid=mod.TypeId) }}">Remove</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span7">
+        <h4>Add Price Modifier</h4>
+            <form action="{{ url_for('add_mod') }}" method="POST">
+                <div class="form-group">
+                    <label for="type_name">Item Name</label>
+                    <input type="text" class="input-lg col-lg-6" name="type_name" placeholder="Item Name" {% if type_name %}value="{{type_name}}"{% endif %}>
+                </div>
+                <div class="form-group">
+                    <label for="mod_amt">Price Modifier</label>
+                    <input type="text" class="input-small" rows="5" name="mod_amt" placeholder="1.0" {% if mod_amt %}value="{{mod_amt}}"{% endif %}>
+                </div>
+                <button class="btn btn-primary" type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -17,6 +17,18 @@ def login_required(func):
         return func(*args, **kwargs)
     return decorated_function
 
+def requires_access(level):
+    """Limit access to views based on minimum User.AccessLevel"""
+    def access_decorator(func):
+        @wraps(func)
+        @login_required
+        def decorated_function(*args, **kwargs):
+            if not g.user.AccessLevel >= level:
+                flash('Requires admin access')
+                return redirect(url_for('index'))
+            return func(*args, **kwargs)
+        return decorated_function
+    return access_decorator
 
 def save_result(result, public=True):
     data = json.dumps(result, indent=2)
@@ -67,3 +79,4 @@ def load_result(result_id):
 
 def is_from_igb():
     return request.headers.get('User-Agent', '').find("EVE-IGB") != -1
+

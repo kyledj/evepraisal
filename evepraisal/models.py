@@ -1,4 +1,13 @@
+import datetime
+import decimal
+
 from . import db
+
+
+# Access levels
+NORMAL_USER = 0
+ADMIN = 1
+SUPERUSER = 2
 
 
 class Scans(db.Model):
@@ -19,9 +28,53 @@ class Users(db.Model):
     Id = db.Column(db.Integer(), primary_key=True)
     OpenId = db.Column(db.String(200))
     Options = db.Column(db.Text())
+    AccessLevel = db.Column(db.Integer(), default=0)
+
+    def is_superuser(self):
+        return self.AccessLevel == SUPERUSER
+
+    def is_admin(self):
+        return self.AccessLeve >= ADMIN
 
 
-class EveType():
+class Modifiers(db.Model):
+    """Modifiers defined by admins to affect the price of specific types"""
+    __tablename__ = 'Modifiers'
+
+    Id = db.Column(db.Integer(), primary_key=True)
+    TypeId = db.Column(db.Integer(), unique=True)
+    TypeName = db.Column(db.Text())
+    Modifier = db.Column(db.Numeric(), default=1.0)
+    CreatedBy = db.Column(db.Integer(), db.ForeignKey('Users.Id'))
+    Created = db.Column(db.DateTime(), default=datetime.datetime.utcnow())
+
+
+    def modify(self, pdata):
+        """Modify the pricing data of an EveType"""
+        if 'sell' in pdata:
+            self._modify_section(pdata['sell'])
+        if 'buy' in pdata:
+            self._modify_section(pdata['buy'])
+        if 'all' in pdata:
+            self._modify_section(pdata['all'])
+        return pdata
+
+    def _modify_section(self, section):
+        if not section:
+            return
+        for k in ['avg', 'min', 'max', 'price']:
+            section[k] = float(decimal.Decimal(section[k]) * self.Modifier)
+
+    @staticmethod
+    def by_typeid(mods):
+        """Returns a dictionary of typeid -> Modifier"""
+        mod_dict = {}
+        for m in mods:
+            mod_dict[m.TypeId] = m
+        return mod_dict
+
+
+class EveType(object):
     def __init__(self, type_id, count=0, props=None, pricing_info=None):
         self.type_id = type_id
 
@@ -34,6 +87,7 @@ class EveType():
         self.volume = self.props.get('volume', 0)
         self.type_name = self.props.get('typeName', 0)
         self.group_id = self.props.get('groupID')
+        self.modifier = None
 
     def representative_value(self):
         if not self.pricing_info:
@@ -62,6 +116,7 @@ class EveType():
             'volume': self.volume,
             'typeName': self.type_name,
             'groupID': self.group_id,
+            'modified': self.modifier is not None,
             'totals': self.pricing_info.get('totals'),
             'sell': self.pricing_info.get('sell'),
             'buy': self.pricing_info.get('buy'),

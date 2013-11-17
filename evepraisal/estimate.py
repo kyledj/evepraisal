@@ -1,5 +1,6 @@
 import urllib2
 import json
+import copy
 import xml.etree.ElementTree as ET
 
 from . import app, cache
@@ -252,7 +253,9 @@ def get_componentized_values(eve_types, options=None):
     return componentized_items
 
 
-def populate_market_values(eve_types, methods=None, options=None):
+def populate_market_values(eve_types, modifiers=None, methods=None, options=None):
+    if modifiers is None:
+        modifiers = {}
     unpopulated_types = list(eve_types)
     if methods is None:
         methods = [
@@ -268,16 +271,25 @@ def populate_market_values(eve_types, methods=None, options=None):
             len(unpopulated_types), pricing_method)
         new_unpopulated_types = []
         for eve_type in unpopulated_types:
-            if eve_type.type_id in prices:
-                pdata = prices[eve_type.type_id]
-                pdata['totals'] = {
-                    'volume': eve_type.props.get('volume', 0) * eve_type.count
-                }
-                for total_key in ['sell', 'buy', 'all']:
-                    _total = pdata[total_key]['price'] * eve_type.count
-                    pdata['totals'][total_key] = _total
-                eve_type.pricing_info = pdata
-            else:
+            pdata = prices.get(eve_type.type_id)
+            if not pdata:
                 new_unpopulated_types.append(eve_type)
+                continue
+            pdata = prices[eve_type.type_id]
+            pdata['totals'] = {
+                'volume': eve_type.props.get('volume', 0) * eve_type.count
+            }
+
+            m = modifiers.get(eve_type.type_id)
+            if m:
+                pdata = m.modify(pdata)
+                eve_type.modifier = m
+
+            for total_key in ['sell', 'buy', 'all']:
+                _total = pdata[total_key]['price'] * eve_type.count
+                pdata['totals'][total_key] = _total
+            eve_type.pricing_info = pdata
         unpopulated_types = new_unpopulated_types
     return eve_types
+
+

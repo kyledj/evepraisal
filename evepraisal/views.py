@@ -4,16 +4,21 @@
 """
 import time
 import json
+from decimal import Decimal, InvalidOperation
 
 from flask import (
     g, flash, request, render_template, url_for, redirect, session,
-    send_from_directory, abort)
+    send_from_directory, abort, current_app)
 from sqlalchemy import desc
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
-from helpers import login_required, save_result, load_result, is_from_igb
+from helpers import (login_required, save_result, load_result,
+                    is_from_igb, requires_access)
 from parser import parse_paste_items
 from estimate import populate_market_values
-from models import Scans, Users
+from models import (Scans, Users, Modifiers,
+                   ADMIN, SUPERUSER, NORMAL_USER)
 from . import app, db, cache, oid
 
 
@@ -23,13 +28,17 @@ def estimate_cost():
     raw_paste = request.form.get('raw_paste', '')
     solar_system = request.form.get('market', '30000142')
 
+    mods = Modifiers.by_typeid(
+        Modifiers.query.all()
+    )
+
     if solar_system not in app.config['VALID_SOLAR_SYSTEMS'].keys():
         abort(400)
 
     eve_types, bad_lines = parse_paste_items(raw_paste)
 
     # Populate types with pricing data
-    populate_market_values(eve_types, options={'solarsystem_id': solar_system})
+    populate_market_values(eve_types, modifiers=mods, options={'solarsystem_id': solar_system})
 
     # calculate the totals
     totals = {'sell': 0, 'buy': 0, 'all': 0, 'volume': 0}
@@ -189,3 +198,119 @@ def logout():
     session.pop('options', None)
     flash(u'You have been signed out')
     return redirect(url_for('index'))
+
+# Admin functions
+@login_required
+def show_oid():
+    "Display the OID of the currently logged in user (for adding to admin list)"
+    # TODO: This could look nicer
+    return g.user.OpenId
+
+
+@requires_access(SUPERUSER)
+def user_admins():
+    """Add/remove admin form"""
+    admins = Users.query.filter(Users.AccessLevel == ADMIN).all()
+    return render_template('user_admin.html', admins=admins)
+
+
+@requires_access(SUPERUSER)
+def remove_admin(aid):
+    try:
+        u = Users.query.filter(Users.Id == aid).one()
+    except NoResultFound:
+        flash("OpenID does not match any users")
+        return redirect(url_for('user_admins'))
+
+    # Reset access level
+    u.AccessLevel = NORMAL_USER
+    db.session.commit()
+
+    flash("Success")
+    return redirect(url_for('user_admins'))
+
+
+@requires_access(SUPERUSER)
+def add_admin():
+    oid = request.form["adminOid"]
+    if not oid:
+        flash("OpenId does not match any users")
+        return redirect(url_for('user_admins'))
+    try:
+        u = Users.query.filter(Users.OpenId == oid).one()
+    except NoResultFound:
+        flash("OpenID does not match any users")
+        return redirect(url_for('user_admins'))
+
+    # Reset access level
+    u.AccessLevel = ADMIN
+    db.session.commit()
+
+    flash("Success")
+    return redirect(url_for('user_admins'))
+
+
+@requires_access(ADMIN)
+def modifiers():
+    """Show current modifiers"""    
+    mods = Modifiers.query.order_by(Modifiers.TypeName).all()
+    return render_template(
+        'admin.html',
+         modifiers=mods,
+         type_name=request.args.get('t'),
+         mod_amt=request.args.get('amt')
+    )
+
+
+@requires_access(ADMIN)
+def add_mod():
+    """Add a price modifier"""
+    name = request.form["type_name"].lower().strip()
+    mod_amt = request.form["mod_amt"].strip()
+
+    type_dict = current_app.config['TYPES'].get(name)
+    if not type_dict:
+        # Not in the current item "database"
+        flash('Type not found')
+        return redirect(url_for('modifiers', t=name, amt=mod_amt))
+
+    try:
+        amt = Decimal(mod_amt)
+    except InvalidOperation:
+        flash('Invalid amount (must be a decimal number)')
+        return redirect(url_for('modifiers', t=name, amt=mod_amt))
+
+    mod = Modifiers(
+        TypeId=type_dict['typeID'],
+        TypeName=type_dict['typeName'],
+        Modifier=amt,
+        CreatedBy=g.user.Id
+    )
+
+    try:
+        db.session.add(mod)
+        db.session.commit()
+    except IntegrityError:
+        flash('Modifier already exists for this item')
+        return redirect(url_for('modifiers'))
+
+    flash('Success')
+    return redirect(url_for('modifiers'))
+
+
+@requires_access(ADMIN)
+def remove_mod(tid):
+    t = None
+    try:
+        t = Modifiers.query.filter(
+            Modifiers.TypeId == tid,
+            ).one()
+    except NoResultFound:
+        flash("Type not found")
+        return redirect(url_for("modifiers"))
+
+    db.session.delete(t)
+    db.session.commit()
+
+    flash('Success')
+    return redirect(url_for('modifiers'))

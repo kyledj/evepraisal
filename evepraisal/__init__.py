@@ -62,6 +62,7 @@ def before_first_request():
     except Exception as e:
         app.logger.error(str(e))
 
+    # Migrations
     try:
         db.engine.execute('ALTER TABLE "Scans" ADD COLUMN "UserId" integer')
     except Exception, e:
