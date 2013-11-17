@@ -67,6 +67,12 @@
           <li><a href="{{ url_for('history') }}">{{_('history button')}}</a></li>
           {% block extra_menu_items %}{% endblock %}
           {% if g.user %}
+            {% if g.user.is_superuser() %}
+            <li><a href="{{ url_for('user_admins') }}">{{_('admin button')}}</a></li>
+            {% endif %}
+            {% if g.user.is_admin() %}
+            <li><a href="{{ url_for('modifiers') }}">{{_('modifiers button')}}</a></li>
+            {% endif %}
             <li><a href="{{ url_for('options') }}">{{_('options button')}}</a></li>
             <li><a href="{{ url_for('logout') }}">{{_('logout button')}}</a></li>
           {% else %}

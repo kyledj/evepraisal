@@ -8,85 +8,109 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-01-05 10:36-0600\n"
+"POT-Creation-Date: 2013-11-16 18:58-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 1.3\n"
 
-#: templates/index.html:6
-msgid "hide buttons"
-msgstr ""
-
-#: templates/index.html:7
-msgid "autosubmit on paste"
-msgstr ""
-
-#: templates/index.html:8
-msgid "save for sharing"
-msgstr ""
-
-#: templates/index.html:86
+#: evepraisal/templates/index.html:66
 msgid "paste box title"
 msgstr ""
 
-#: templates/index.html:88
+#: evepraisal/templates/index.html:68
 msgid "paste box placeholder"
 msgstr ""
 
-#: templates/index.html:92
+#: evepraisal/templates/index.html:72
 msgid "submit button"
 msgstr ""
 
-#: templates/index.html:93
+#: evepraisal/templates/index.html:73
 msgid "reset button"
 msgstr ""
 
-#: templates/index.html:101
-msgid "error"
-msgstr ""
-
-#: templates/index.html:105
+#: evepraisal/templates/index.html:91
 msgid "what do i do title"
 msgstr ""
 
-#: templates/index.html:107
+#: evepraisal/templates/index.html:93
 msgid "what do i do"
 msgstr ""
 
-#: templates/index.html:110
+#: evepraisal/templates/index.html:96
 msgid "paste options title"
 msgstr ""
 
-#: templates/index.html:112
+#: evepraisal/templates/index.html:98
 msgid "paste options"
 msgstr ""
 
-#: templates/layout.default.html:5 templates/layout.default.html:62
+#: evepraisal/templates/layout.default.html:5
+#: evepraisal/templates/layout.default.html:65
 msgid "app title"
 msgstr ""
 
-#: templates/layout.default.html:5
+#: evepraisal/templates/layout.default.html:5
+#: evepraisal/templates/layout.default.html:9
 msgid "app short description"
 msgstr ""
 
-#: templates/layout.default.html:65 templates/layout.default.html:73
+#: evepraisal/templates/layout.default.html:67
+msgid "history button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:71
+msgid "admin button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:73
+msgid "modifiers button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:74
+msgid "options button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:75
+msgid "logout button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:77
+msgid "login button"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:81
+#: evepraisal/templates/layout.default.html:90
 msgid "help tile"
 msgstr ""
 
-#: templates/layout.default.html:76
+#: evepraisal/templates/layout.default.html:93
 msgid "help text"
 msgstr ""
 
-#: templates/layout.default.html:79 templates/results.html:39
-#: templates/scan_results.html:39
+#: evepraisal/templates/layout.default.html:96
+#: evepraisal/templates/results.html:47
+#: evepraisal/templates/scan_results.html:39
 msgid "close buton"
 msgstr ""
 
-#: templates/layout.default.html:88
+#: evepraisal/templates/layout.default.html:106
+msgid "error"
+msgstr ""
+
+#: evepraisal/templates/layout.default.html:121
 msgid "footer text"
+msgstr ""
+
+#: evepraisal/templates/options.html:10
+msgid "autosubmit on paste"
+msgstr ""
+
+#: evepraisal/templates/options.html:11
+msgid "save for sharing"
 msgstr ""
 

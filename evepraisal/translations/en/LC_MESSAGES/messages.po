@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-08-03 23:58-0500\n"
+"POT-Creation-Date: 2013-11-16 18:58-0800\n"
 "PO-Revision-Date: 2013-01-03 20:18-0600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: en <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
+"Generated-By: Babel 1.3\n"
 
 #: evepraisal/templates/index.html:66
 msgid "paste box title"
@@ -66,7 +66,7 @@ msgstr ""
 "</ul>\n"
 
 #: evepraisal/templates/layout.default.html:5
-#: evepraisal/templates/layout.default.html:62
+#: evepraisal/templates/layout.default.html:65
 msgid "app title"
 msgstr "Evepraisal"
 
@@ -77,28 +77,36 @@ msgstr ""
 "Price check Eve Online items from Cargo Scans, Contracts, D-Scan, EFT "
 "Blocks, Inventory, Assets"
 
-#: evepraisal/templates/layout.default.html:64
+#: evepraisal/templates/layout.default.html:67
 msgid "history button"
 msgstr "History"
 
-#: evepraisal/templates/layout.default.html:67
+#: evepraisal/templates/layout.default.html:71
+msgid "admin button"
+msgstr "Admin"
+
+#: evepraisal/templates/layout.default.html:73
+msgid "modifiers button"
+msgstr "Price Modifiers"
+
+#: evepraisal/templates/layout.default.html:74
 msgid "options button"
 msgstr "Options"
 
-#: evepraisal/templates/layout.default.html:68
+#: evepraisal/templates/layout.default.html:75
 msgid "logout button"
 msgstr "Logout"
 
-#: evepraisal/templates/layout.default.html:70
+#: evepraisal/templates/layout.default.html:77
 msgid "login button"
 msgstr "Login"
 
-#: evepraisal/templates/layout.default.html:74
-#: evepraisal/templates/layout.default.html:83
+#: evepraisal/templates/layout.default.html:81
+#: evepraisal/templates/layout.default.html:90
 msgid "help tile"
 msgstr "Help"
 
-#: evepraisal/templates/layout.default.html:86
+#: evepraisal/templates/layout.default.html:93
 msgid "help text"
 msgstr ""
 "        <h4>What is this?</h4>        <p>This is a tool for Eve Online "
@@ -127,17 +135,17 @@ msgstr ""
 "href=\"https://gate.eveonline.com/Profile/Magerawr\" "
 "target=\"_blank\">Magerawr</a>.</p>"
 
-#: evepraisal/templates/layout.default.html:89
+#: evepraisal/templates/layout.default.html:96
 #: evepraisal/templates/results.html:47
 #: evepraisal/templates/scan_results.html:39
 msgid "close buton"
 msgstr "Close"
 
-#: evepraisal/templates/layout.default.html:99
+#: evepraisal/templates/layout.default.html:106
 msgid "error"
 msgstr "Error"
 
-#: evepraisal/templates/layout.default.html:114
+#: evepraisal/templates/layout.default.html:121
 msgid "footer text"
 msgstr ""
 "Created by <a href=\"https://gate.eveonline.com/Profile/Magerawr\" "

@@ -34,7 +34,7 @@ class Users(db.Model):
         return self.AccessLevel == SUPERUSER
 
     def is_admin(self):
-        return self.AccessLeve >= ADMIN
+        return self.AccessLevel >= ADMIN
 
 
 class Modifiers(db.Model):
